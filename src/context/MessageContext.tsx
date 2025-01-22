@@ -1,5 +1,5 @@
 
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 
 export interface IMessage {
   role: string;
@@ -12,4 +12,14 @@ export interface MessageContextType {
   setMessage: React.Dispatch<React.SetStateAction<IMessage | undefined>>;
 }
 
-export const MessageContext = createContext<MessageContextType|null>(null)
+export const MessageContext = createContext<MessageContextType | null>(null)
+
+
+export const useMessage = () => {
+  const context = useContext(MessageContext);
+    if (!context) {
+      throw new Error('Hero must be used within a MessageContext.Provider');
+  }
+  
+  return context
+}

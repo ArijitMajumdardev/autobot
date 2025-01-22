@@ -1,9 +1,32 @@
 'use client'
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button } from '../ui/button'
+import { useSession } from 'next-auth/react'
+import { useUserDetail } from '@/context/UserDetailContext'
 
 function Header() {
+
+  const {data : session} = useSession()
+    const { userDetail, setUserDetail } = useUserDetail()
+  
+ 
+     useEffect(() => {
+         
+        
+         if (session?.user) {
+             setUserDetail({
+                 name: session.user.name,
+                 email: session.user.email,
+                 image: session.user.image,
+             });
+         }
+ 
+ 
+     }, [session, setUserDetail]);
+ 
+
+  
   return (
       <div className='p-4 flex justify-between items-center'>
           <div className='bg-white w-11 h-11 flex justify-center items-center rounded-md'>
