@@ -7,7 +7,11 @@ import { ArrowRight } from 'lucide-react'
 import { MessageContext, useMessage } from '@/context/MessageContext'
 import { UserDetailContext, useUserDetail } from '@/context/UserDetailContext'
 import SignInDialog from './SignInDialog'
-import { useSession } from 'next-auth/react'
+import { useMutation } from 'convex/react'
+import { api } from '../../../convex/_generated/api'
+import { CreateWorkspace } from '../../../convex/workspace'
+import { Id } from '../../../convex/_generated/dataModel'
+import { useRouter } from 'next/navigation'
 
 
 interface MessageContextType {
@@ -18,53 +22,52 @@ interface MessageContextType {
 
 
 function Hero() {
-    const {data : session} = useSession()
-    const isUserSignedIn = Boolean(session?.user);
-
-
+ 
     const [userInput, setUserInput] = useState<string>('')
     const [openDialog,setOpenDialog] = useState(false)
-     // Access UserDetailContext
 
-  const { userDetail, setUserDetail } = useUserDetail()
-
-  // Access MessageContext
-
+    const { userDetail, setUserDetail } = useUserDetail()
     const { message, setMessage } = useMessage();
-    
+    const router = useRouter()
 
-
-    useEffect(() => {
+const CreateWorkspace = useMutation(api.workspace.CreateWorkspace)
+    // useEffect(() => {
         
-        const savedPrompt = localStorage.getItem('unsentPrompt');
-        if (savedPrompt) {
-          setUserInput(savedPrompt);
-          localStorage.removeItem('unsentPrompt'); // Clean up after restoration
-        }
+    //     const savedPrompt = localStorage.getItem('unsentPrompt');
+    //     if (savedPrompt) {
+    //       setUserInput(savedPrompt);
+    //       localStorage.removeItem('unsentPrompt'); // Clean up after restoration
+    //     }
        
 
 
-    }, []);
+    // }, []);
 
 
-    const onGenerate = (input: string) => {
+    const onGenerate = async(input: string) => {
         if (!userDetail?.name) {
             setOpenDialog(true)
             return
         }
 
-        // if (!isUserSignedIn) {
-        //     setOpenDialog(true);
-        //     return;
-        // }
-        setMessage({
+
+        const msg = {
             role: 'user',
             content : input
+        }
+        setMessage(msg)
+
+        const workspaceId = await CreateWorkspace({
+            user: userDetail._id as Id<"users">,
+            messages: [msg]
         })
+
+        router.push('/workspace/'+workspaceId)
+
     }
 
     console.log("message",message)
-    console.log("session clent ",session)
+    // console.log("session clent ",session)
   return (
       <div className=' flex flex-col gap-2 items-center mt-36'>
           <h2 className='font-bold text-3xl'>{Lookup.HERO_HEADING}</h2>

@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Provider from "@/components/Provider";
 import Header from "@/components/custom/Header";
-import Session_Provider from "@/components/Session_Provider";
+import { ConvexClientProvider } from "@/components/ConvexClientProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,22 +27,26 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
+      <body>
        
-      > 
-        <Session_Provider>
+        <ConvexClientProvider>
 
-        <Provider  attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange>
-          <Header/>
-        {children}
-        </Provider>
-            </Session_Provider>
+         
+            <Provider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem
+              disableTransitionOnChange
+              >
+              <Header />
+              {children}
+            </Provider>
+              </ConvexClientProvider>
+         
+       
       </body>
     </html>
   );
 }
 
-// className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+

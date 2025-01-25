@@ -1,4 +1,4 @@
-
+'use client'
 
 import { createContext, SetStateAction, useContext } from "react";
 
@@ -6,6 +6,7 @@ export interface IuserDetail {
     name: string | null | undefined;
     email: string | null | undefined;
     image: string | null | undefined;
+    _id : string
 }
 
 export interface IUserDetailContext{
