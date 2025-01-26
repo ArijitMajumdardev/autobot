@@ -17,7 +17,8 @@ export const CreateUser = mutation({
                 name: args.name,
                 email: args.email,
                 image: args.image,
-                uid: args.uid
+                uid: args.uid,
+                token:50000
             })
             return result
 

@@ -13,6 +13,7 @@ import { ArrowRight, Loader2Icon } from "lucide-react";
 import Prompt from "@/data/Prompt";
 import axios from "axios";
 import ReactMarkdown from 'react-markdown'
+import { useSidebar } from "../ui/sidebar";
 
 interface AIResponse {
   result: string;
@@ -25,7 +26,8 @@ const ChatView = () => {
   const { userDetail, setUserDetail } = useUserDetail();
   const [userInput, setUserInput] = useState<string>("");
   const [loading, setLoading] = useState(false);
-const UpdateMessage = useMutation(api.workspace.UpdateMessage)
+  const UpdateMessage = useMutation(api.workspace.UpdateMessage)
+  const { toggleSidebar} = useSidebar()
 
   useEffect(() => {
     // Ensure `id` is a string and cast it to the expected type
@@ -89,8 +91,8 @@ const UpdateMessage = useMutation(api.workspace.UpdateMessage)
         setUserInput('')
     }
   return (
-    <div className="relative h-[80vh] flex flex-col">
-      <div className="flex-1 overflow-y-scroll scrollbar-hide ">
+    <div className="relative h-[80vh] flex flex-col ">
+      <div className="flex-1 overflow-y-scroll scrollbar-hide pl-10  ">
         {message?.map((msg, index) => (
           <div
             key={index}
@@ -124,6 +126,13 @@ const UpdateMessage = useMutation(api.workspace.UpdateMessage)
         )}
       </div>
       {/* input section */}
+      <div className="flex gap-2 items-end">
+      {userDetail &&  <Image className="rounded-full cursor-pointer" onClick={toggleSidebar}
+                  src={userDetail.image as string}
+                  width={30}
+                  height={30}
+                  alt="logo"
+                />}
 
       <div className="p-5 w-full border max-w-xl rounded-xl mt-3 bg-zinc-800 group focus-within:bg-zinc-700 transition-colors duration-150 ">
         <div className="flex gap-2 ">
@@ -137,7 +146,8 @@ const UpdateMessage = useMutation(api.workspace.UpdateMessage)
             <ArrowRight  onClick={()=>onGenerate(userInput)} className="h-10 w-10 p-2 hover:bg-rose-500 rounded-md cursor-pointer" />
           )}
         </div>
-      </div>
+        </div>
+        </div>
     </div>
   );
 };

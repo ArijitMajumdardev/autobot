@@ -6,7 +6,8 @@ export default defineSchema({
         name: v.string(),
         email: v.string(),
         image: v.string(),
-        uid:v.string()
+        uid: v.string(),
+        token:v.optional(v.number())
         
     }),
     workspace: defineTable({
