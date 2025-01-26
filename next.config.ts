@@ -24,10 +24,10 @@ const nextConfig: NextConfig = {
             key: "Cross-Origin-Opener-Policy",
             value: "same-origin-allow-popups", // Required for OAuth popups
           },
-          {
-            key: "Cross-Origin-Embedder-Policy",
-            value: "require-corp",
-          },
+          // {
+          //   key: "Cross-Origin-Embedder-Policy",
+          //   value: "require-corp",
+          // },
         ],
       },
     ];

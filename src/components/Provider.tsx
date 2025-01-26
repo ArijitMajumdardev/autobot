@@ -14,7 +14,7 @@ export default function Provider({
     ...props
 }: React.ComponentProps<typeof NextThemesProvider>) {
     
-    const [message, setMessage] = useState<IMessage|undefined>(undefined)
+    const [message, setMessage] = useState<IMessage[]>([])
     const [userDetail, setUserDetail] = useState<IuserDetail | undefined>(undefined)
     const convex =  useConvex()
 
@@ -54,7 +54,7 @@ export default function Provider({
       </NextThemesProvider>
         </MessageContext.Provider>
             </UserDetailContext.Provider>
-        \
+        
             </GoogleOAuthProvider>
 
   )

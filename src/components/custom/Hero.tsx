@@ -55,7 +55,7 @@ const CreateWorkspace = useMutation(api.workspace.CreateWorkspace)
             role: 'user',
             content : input
         }
-        setMessage(msg)
+        setMessage((prevItems) => (prevItems ? [...prevItems, msg] : [msg]));
 
         const workspaceId = await CreateWorkspace({
             user: userDetail._id as Id<"users">,

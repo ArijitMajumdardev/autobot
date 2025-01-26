@@ -8,13 +8,14 @@ export interface IMessage {
 
 
 export interface MessageContextType {
-  message: IMessage | undefined ;
-  setMessage: React.Dispatch<React.SetStateAction<IMessage | undefined>>;
+  message: IMessage[]  ;
+  setMessage: React.Dispatch<React.SetStateAction<IMessage[] >>;
 }
 
-export const MessageContext = createContext<MessageContextType | null>(null)
-
-
+export const MessageContext = createContext<MessageContextType>({
+  message: [], // Initialize with an empty array
+  setMessage: () => {},
+});
 export const useMessage = () => {
   const context = useContext(MessageContext);
     if (!context) {
