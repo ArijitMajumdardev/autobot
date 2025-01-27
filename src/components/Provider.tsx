@@ -42,6 +42,7 @@ export default function Provider({
           email: result.email,
           image: result.image,
           _id: result._id,
+          token:result.token
         });
         console.log(result);
       }

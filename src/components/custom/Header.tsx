@@ -38,7 +38,7 @@ function Header() {
   // }, [session, createUser, setUserDetail]);
 
   return (
-    <div className="p-4 flex justify-between items-center">
+    <div className="p-4 flex justify-between items-center ">
       <div className="bg-white w-11 h-11 flex justify-center items-center rounded-md">
         <Image
           src={"/chat-bubble_11401129.svg"}

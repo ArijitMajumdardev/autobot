@@ -15,7 +15,7 @@ import SideFooter from './SideFooter'
 
 const AppSideBar = () => {
   return (
-    <Sidebar>
+    <Sidebar >
       <SidebarHeader className='p-5' >
         
           <div className="bg-white w-11 h-11 flex justify-center items-center rounded-md">

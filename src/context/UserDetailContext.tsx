@@ -6,7 +6,8 @@ export interface IuserDetail {
     name: string | null | undefined;
     email: string | null | undefined;
     image: string | null | undefined;
-    _id : string
+    _id: string,
+    token: number|undefined
 }
 
 export interface IUserDetailContext{

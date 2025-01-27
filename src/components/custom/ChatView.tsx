@@ -19,6 +19,11 @@ interface AIResponse {
   result: string;
 }
 
+
+export const countToken = (inputText: string)=>{
+  return inputText.trim().split(/\s+/).filter(word =>word).length
+}
+
 const ChatView = () => {
   const { id }: { id: Id<"workspace"> } = useParams();
   const convex = useConvex();
@@ -27,7 +32,8 @@ const ChatView = () => {
   const [userInput, setUserInput] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const UpdateMessage = useMutation(api.workspace.UpdateMessage)
-  const { toggleSidebar} = useSidebar()
+  const { toggleSidebar } = useSidebar()
+  const UpdateTokens = useMutation(api.users.UpdateToken)
 
   useEffect(() => {
     // Ensure `id` is a string and cast it to the expected type
@@ -73,11 +79,22 @@ const ChatView = () => {
       ...prev,aiResp
       
     ]);
+
       
       await UpdateMessage({
           messages: [...message, aiResp],
           workspaceId: id,
       })
+    
+    // update the tokens in the user table
+    
+    const token = Number(userDetail?.token) - Number(countToken(JSON.stringify(aiResp))) 
+
+    await UpdateTokens({
+      token: token,
+      userId:userDetail?._id as Id<"users">
+    })
+
 
     setLoading(false);
   };
