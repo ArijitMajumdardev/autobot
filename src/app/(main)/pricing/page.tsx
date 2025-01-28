@@ -9,7 +9,7 @@ const page = () => {
     const { userDetail, setUserDetail } = useUserDetail();
 
   return (
-      <div className=' m-auto mt-2 h-[100vh] flex flex-col items-center '>
+      <div className=' m-auto mt-2 min-h-[100vh] flex flex-col items-center  '>
           <h2 className='font-bold text-3xl'>Pricing</h2>
           <p className='text-gray-400  max-w-xl text-center mt-4'>{Lookup.PRICING_DESC}</p>
 

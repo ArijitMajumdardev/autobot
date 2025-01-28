@@ -21,6 +21,7 @@ import Header from "./custom/Header";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { ActionContext, Iaction } from "@/context/ActionContext";
 import { useRouter } from "next/navigation";
+import { SignContext } from "@/context/SignContext";
 
 export default function Provider({
   children,
@@ -31,6 +32,7 @@ export default function Provider({
     undefined
   );
   const [action, setAction] = useState<Iaction>();
+    const [openDialog,setOpenDialog] = useState(false)
 const router = useRouter()
   const convex = useConvex();
 
@@ -68,18 +70,34 @@ const router = useRouter()
     <GoogleOAuthProvider
       clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string}
     >
+
       <PayPalScriptProvider options={{ clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID as string }}>
       <UserDetailContext.Provider value={{ userDetail, setUserDetail }}>
           <MessageContext.Provider value={{ message, setMessage }}>
-            <ActionContext.Provider value={{action, setAction}}>
+            <ActionContext.Provider value={{ action, setAction }}>
+              <SignContext.Provider value={{openDialog,setOpenDialog}}>
+
 
                   <NextThemesProvider {...props}>
-                  <Header />
-            <SidebarProvider defaultOpen={false}>
-              <AppSideBar />
-              {children}
-            </SidebarProvider>
-          </NextThemesProvider>
+                  
+                  <SidebarProvider defaultOpen={false}>
+    <div className=" relative flex flex-col h-screen">
+      {/* Header */}
+      <Header className="fixed top-0 left-0 w-full z-10" />
+
+      {/* Sidebar and Content */}
+      <div className="flex flex-1 pt-[64px]"> {/* Adjust padding-top to match Header's height */}
+      <AppSideBar className="" />
+
+        <main className="flex-1 overflow-y-auto w-[98vw]  ">
+          {children}
+        </main>
+      </div>
+    </div>
+  </SidebarProvider>
+                </NextThemesProvider>
+              </SignContext.Provider>
+                
             </ActionContext.Provider>
         </MessageContext.Provider>
         </UserDetailContext.Provider>

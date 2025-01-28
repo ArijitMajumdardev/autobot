@@ -10,20 +10,19 @@ import {
 import Lookup from "@/data/Lookup";
 import { Button } from "../ui/button";
 import { IuserDetail, useUserDetail } from "@/context/UserDetailContext";
-import { useMutation } from "convex/react";
+import { useConvex, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import uuid4 from "uuid4";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { Id } from "../../../convex/_generated/dataModel";
 
-
 export interface Iresult {
   name: string | null | undefined;
   email: string | null | undefined;
   picture: string | null | undefined;
-  _id: string,
-  uid:string
+  _id: string;
+  uid: string;
 }
 
 function SignInDialog({
@@ -34,10 +33,26 @@ function SignInDialog({
   openDialog: boolean;
   closeDialog: (v: boolean) => void;
   userInput: string;
-}) {
+  }) {
+  
+  
+  
+  
+  
+  
   const { setUserDetail } = useUserDetail();
 
   const CreateUser = useMutation(api.users.CreateUser);
+  const convex = useConvex();
+
+
+
+
+
+
+
+
+
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -48,31 +63,54 @@ function SignInDialog({
       );
 
       console.log(userInfo);
-      const user= userInfo.data;
+      const user = userInfo.data;
+      
+      const UserIndb = await convex.query(api.users.GetUser, {
+        email: user.email,
+      });
 
-      const result  = await CreateUser({
+
+      if (UserIndb.name ) {
+        if (typeof window !== undefined) {
+          localStorage.setItem("user", JSON.stringify(user));
+        }
+
+        const _id = UserIndb._id;
+        setUserDetail({
+          name: user.name,
+          email: user.email,
+          image: user.picture,
+          _id: _id,
+          token: 50000,
+        });
+        closeDialog(false);
+
+        return
+      }
+
+
+      const result = await CreateUser({
         name: user.name,
         email: user.email,
         image: user.picture,
         uid: uuid4(),
       });
 
-      
-      console.log("this is the result ", result)
+      console.log("this is the result ", result);
 
       if (result) {
         // Only set user details if the result is not null
         if (typeof window !== undefined) {
-          localStorage.setItem('user', JSON.stringify(user));
+          localStorage.setItem("user", JSON.stringify(user));
         }
 
-        const _id = result
+        const _id = result;
         setUserDetail({
           name: user.name,
           email: user.email,
           image: user.picture,
           _id: _id,
-          token:50000
+          token: 50000,
         });
         closeDialog(false);
       } else {
@@ -82,15 +120,6 @@ function SignInDialog({
     },
     onError: (errorResponse) => console.log(errorResponse),
   });
-
-  // const handleSignIn = async () => {
-  //   try {
-  //     localStorage.setItem("unsentPrompt", userInput);
-  //     await signIn("google");
-  //   } catch (error) {
-  //     console.error("Error during sign-in:", error);
-  //   }
-  // };
 
   return (
     <Dialog open={openDialog} onOpenChange={closeDialog}>

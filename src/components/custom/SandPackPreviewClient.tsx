@@ -20,7 +20,8 @@ export const SandPackPreviewClient = () => {
     const { sandpack } = useSandpack();
     const {action,setAction } = useActionContext()
 
-    useEffect(()=>{
+    useEffect(() => {
+        
         GetSandPackClient()
     },[sandpack && action])
 

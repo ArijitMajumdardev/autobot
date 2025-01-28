@@ -13,6 +13,7 @@ import { CreateWorkspace } from '../../../convex/workspace'
 import { Id } from '../../../convex/_generated/dataModel'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { useSignContext } from '@/context/SignContext'
 
 
 interface MessageContextType {
@@ -25,7 +26,7 @@ interface MessageContextType {
 function Hero() {
  
     const [userInput, setUserInput] = useState<string>('')
-    const [openDialog,setOpenDialog] = useState(false)
+    const {openDialog, setOpenDialog} = useSignContext()
 
     const { userDetail, setUserDetail } = useUserDetail()
     const { message, setMessage } = useMessage();

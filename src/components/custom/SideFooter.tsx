@@ -3,10 +3,12 @@ import { Button } from "../ui/button"
 import { useRouter } from "next/navigation"
 import { ForwardRefExoticComponent, RefAttributes } from "react"
 import { useSidebar } from "../ui/sidebar"
+import { useUserDetail } from "@/context/UserDetailContext"
 
 
 export default function SideFooter() {
-    const { toggleSidebar} = useSidebar()
+    const { toggleSidebar } = useSidebar()
+    const {setUserDetail} = useUserDetail()
     const router = useRouter()
     const options=[
         {
@@ -28,7 +30,13 @@ export default function SideFooter() {
         },
     ]
 
-    const onOptionClick = (item : {name:string , icon : ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>> , path? : string}) => {
+    const onOptionClick = (item: { name: string, icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>, path?: string }) => {
+        
+        if (item.name == 'Sign Out') {
+            localStorage.removeItem('user')
+            setUserDetail(undefined)
+            return
+        }
         router.push(item.path as string)
         toggleSidebar()
     }

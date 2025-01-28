@@ -19,7 +19,7 @@ import { Loader2Icon } from 'lucide-react';
 import { useUserDetail } from '@/context/UserDetailContext';
 import { countToken } from './ChatView';
 import { SandPackPreviewClient } from './SandPackPreviewClient';
-import { useActionContext } from '@/context/ActionContext';
+
 
 
 const CodeView = () => {
@@ -32,17 +32,45 @@ const CodeView = () => {
   const [files, setFiles] = useState(Lookup.DEFAULT_FILE)
   const { message } = useMessage()
   const { userDetail, setUserDetail } = useUserDetail();
-  const { action} = useActionContext()
+  
 
   const convex = useConvex()
   const updateFiles = useMutation(api.workspace.UpdateFiles)
     const UpdateTokens = useMutation(api.users.UpdateToken)
   
 
-  useEffect(() => {
-    setActiveTab('preview')
-  },[action])
+  // useEffect(() => {
+  //   setActiveTab('preview')
+  // },[action])
   
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
   
 
   useEffect(() => {

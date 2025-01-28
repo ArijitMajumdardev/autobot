@@ -13,9 +13,9 @@ import { WorkspaceHistory } from './WorkspaceHistory'
 import SideFooter from './SideFooter'
 
 
-const AppSideBar = () => {
+const AppSideBar = ({className}:{className:string}) => {
   return (
-    <Sidebar >
+    <Sidebar className={`${className}`}>
       <SidebarHeader className='p-5' >
         
           <div className="bg-white w-11 h-11 flex justify-center items-center rounded-md">
