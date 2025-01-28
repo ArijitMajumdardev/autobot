@@ -65,7 +65,7 @@ const CodeView = () => {
 
 
 
-  
+
 
 
 
@@ -96,13 +96,13 @@ const CodeView = () => {
 
     useEffect(() => {
         
-      if (message?.length > 0) {
+      if (!loading && message?.length > 0) {
         const role = message[message.length - 1].role;
         if (role == "user") {
           GenerateAiCode();
         }
       }
-    }, [message]);
+    }, [message,loading]);
   
   
   

@@ -51,15 +51,14 @@ const ChatView = () => {
     console.log(result);
   };
 
-    useEffect(() => {
-      
-    if (message?.length > 0) {
+  useEffect(() => {
+    if (!loading && message?.length > 0) {
       const role = message[message.length - 1].role;
-      if (role == "user") {
+      if (role === "user") {
         GetAIResponse();
       }
     }
-  }, [message]);
+  }, [message, loading]);
 
   const GetAIResponse = async () => {
     setLoading(true);

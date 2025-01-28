@@ -35,6 +35,8 @@ export default function SideFooter() {
         if (item.name == 'Sign Out') {
             localStorage.removeItem('user')
             setUserDetail(undefined)
+            toggleSidebar()
+            router.push('/')
             return
         }
         router.push(item.path as string)

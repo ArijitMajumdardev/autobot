@@ -28,7 +28,7 @@ export const WorkspaceHistory = () => {
               }
 
   return (
-      <div>
+      <div >
       <h2 className="font-medium text-lg">Your Chats</h2>
       <div>
         {workspaceList && workspaceList?.map((workspace: any, index: number) => (
