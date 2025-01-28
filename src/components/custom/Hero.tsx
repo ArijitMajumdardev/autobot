@@ -12,6 +12,7 @@ import { api } from '../../../convex/_generated/api'
 import { CreateWorkspace } from '../../../convex/workspace'
 import { Id } from '../../../convex/_generated/dataModel'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 
 interface MessageContextType {
@@ -49,7 +50,10 @@ const CreateWorkspace = useMutation(api.workspace.CreateWorkspace)
             setOpenDialog(true)
             return
         }
-
+        if (Number(userDetail?.token) < 10) {
+            toast("You Don't Have Enough Tokens !")
+              return
+            }
 
         const msg = {
             role: 'user',

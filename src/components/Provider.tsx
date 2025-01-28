@@ -18,6 +18,9 @@ import { api } from "../../convex/_generated/api";
 import { SidebarProvider } from "./ui/sidebar";
 import AppSideBar from "./custom/AppSideBar";
 import Header from "./custom/Header";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { ActionContext, Iaction } from "@/context/ActionContext";
+import { useRouter } from "next/navigation";
 
 export default function Provider({
   children,
@@ -27,11 +30,17 @@ export default function Provider({
   const [userDetail, setUserDetail] = useState<IuserDetail | undefined>(
     undefined
   );
+  const [action, setAction] = useState<Iaction>();
+const router = useRouter()
   const convex = useConvex();
 
   const isAuthenticated = async () => {
     if (typeof window !== undefined) {
       const user = JSON.parse(localStorage.getItem("user") as string);
+      if (!user) {
+        router.push('/')
+        return
+      }
       if (user) {
         const result = await convex.query(api.users.GetUser, {
           email: user.email,
@@ -46,6 +55,8 @@ export default function Provider({
         });
         console.log(result);
       }
+
+
     }
   };
 
@@ -57,8 +68,11 @@ export default function Provider({
     <GoogleOAuthProvider
       clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string}
     >
+      <PayPalScriptProvider options={{ clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID as string }}>
       <UserDetailContext.Provider value={{ userDetail, setUserDetail }}>
-        <MessageContext.Provider value={{ message, setMessage }}>
+          <MessageContext.Provider value={{ message, setMessage }}>
+            <ActionContext.Provider value={{action, setAction}}>
+
                   <NextThemesProvider {...props}>
                   <Header />
             <SidebarProvider defaultOpen={false}>
@@ -66,8 +80,10 @@ export default function Provider({
               {children}
             </SidebarProvider>
           </NextThemesProvider>
+            </ActionContext.Provider>
         </MessageContext.Provider>
-      </UserDetailContext.Provider>
+        </UserDetailContext.Provider>
+        </PayPalScriptProvider>
     </GoogleOAuthProvider>
   );
 }

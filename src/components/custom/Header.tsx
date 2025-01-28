@@ -7,35 +7,27 @@ import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import uuid4 from "uuid4";
 
+import { usePathname } from "next/navigation";
+import { useActionContext } from "@/context/ActionContext";
+import { LucideDownload, RocketIcon } from "lucide-react";
+
+
 function Header() {
   
   const { userDetail, setUserDetail } = useUserDetail();
+  const pathname = usePathname()
+  console.log("pathanme", pathname)
+  const isWorkspacePage = /^\/workspace\/[a-zA-Z0-9_-]+$/.test(pathname);
+  console.log("isWorkspacePage ", isWorkspacePage)
+  const {action,setAction } = useActionContext()
 
-
-  // useEffect(() => {
-  //   const handleUserCreation = async () => {
-  //     if (session?.user) {
-  //       try {
-  //         // await createUser({
-  //         //   name: session.user.name as string,
-  //         //   email: session.user.email as string,
-  //         //   image: session.user.image as string,
-  //         //   uid: uuid4(),
-  //         // });
-
-  //         setUserDetail({
-  //           name: session.user.name,
-  //           email: session.user.email,
-  //           image: session.user.image,
-  //         });
-  //       } catch (error) {
-  //         console.error("Error creating user:", error);
-  //       }
-  //     }
-  //   };
-
-  //   handleUserCreation();
-  // }, [session, createUser, setUserDetail]);
+  const OnActionBtn = (action: string) => {
+    console.log(action)
+    setAction({
+      actionType: action,
+      timeStamp:Date.now()
+    })
+  }
 
   return (
     <div className="p-4 flex justify-between items-center ">
@@ -51,6 +43,23 @@ function Header() {
       <div className="flex gap-5">
         {userDetail?.name ? (
           <>
+            {
+              isWorkspacePage && (
+                <>
+                <Button  className="bg-gradient-to-tr from-purple-600 to-orange-500 hover:from-purple-500 hover:to-orange-400 transition-all duration-300"
+                    variant={"ghost"}
+                  onClick={()=>OnActionBtn('export')}
+                  ><LucideDownload/>Export</Button>
+                  
+                   
+                <Button  className="bg-gradient-to-tr from-blue-600 to-teal-600 hover:from-blue-500 hover:to-teal-400 transition-all duration-300 "
+                    variant={"ghost"}
+                    onClick={()=>OnActionBtn('deploy')}
+                  ><RocketIcon />Deploy</Button>
+                </>
+              )
+            }
+            
             <Image
               src={userDetail.image as string}
               alt={userDetail.name}
@@ -58,13 +67,7 @@ function Header() {
               height={36}
               className="rounded-full"
             />
-            <Button
-              className="bg-accent text-accent-foreground hover:bg-[#464646]"
-              variant={"ghost"}
-              
-            >
-              Log out
-            </Button>
+           
           </>
         ) : (
           <>

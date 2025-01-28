@@ -11,29 +11,39 @@ import Lookup from '@/data/Lookup';
 import { useMessage } from '@/context/MessageContext';
 import Prompt from '@/data/Prompt';
 import axios from 'axios';
-import { useConvex, useMutation } from 'convex/react';
+import { useAction, useConvex, useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 import { useParams } from 'next/navigation';
 import { Id } from '../../../convex/_generated/dataModel';
 import { Loader2Icon } from 'lucide-react';
 import { useUserDetail } from '@/context/UserDetailContext';
 import { countToken } from './ChatView';
+import { SandPackPreviewClient } from './SandPackPreviewClient';
+import { useActionContext } from '@/context/ActionContext';
 
 
 const CodeView = () => {
+
+
     const { id }: { id: Id<"workspace"> } = useParams();
   
   const [activeTab, setActiveTab] = useState('code')
   const [loading, setLoading] = useState(false)
   const [files, setFiles] = useState(Lookup.DEFAULT_FILE)
   const { message } = useMessage()
-    const { userDetail, setUserDetail } = useUserDetail();
+  const { userDetail, setUserDetail } = useUserDetail();
+  const { action} = useActionContext()
 
   const convex = useConvex()
   const updateFiles = useMutation(api.workspace.UpdateFiles)
     const UpdateTokens = useMutation(api.users.UpdateToken)
   
 
+  useEffect(() => {
+    setActiveTab('preview')
+  },[action])
+  
+  
 
   useEffect(() => {
     id && GetFiles()
@@ -50,7 +60,11 @@ const CodeView = () => {
 
     setLoading(false)
     
-}
+  }
+  
+
+
+
 
     useEffect(() => {
         
@@ -61,6 +75,9 @@ const CodeView = () => {
         }
       }
     }, [message]);
+  
+  
+  
   
   
   
@@ -88,8 +105,22 @@ const CodeView = () => {
           userId:userDetail?._id as Id<"users">
         })
     
+        setUserDetail((prev) => {
+          if (!prev) return undefined; 
+          return {
+            ...prev,
+            token: token 
+          };
+        });
+    
     setLoading(false)
   }
+
+
+
+
+
+
 
 
   return (
@@ -127,8 +158,7 @@ const CodeView = () => {
           </>):
           
           (<>
-      <SandpackPreview style={{height:'75vh'}}  showNavigator />
-
+            <SandPackPreviewClient/>
           </>)
           }
     </SandpackLayout>

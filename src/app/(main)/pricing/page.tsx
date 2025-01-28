@@ -13,7 +13,7 @@ const page = () => {
           <h2 className='font-bold text-3xl'>Pricing</h2>
           <p className='text-gray-400  max-w-xl text-center mt-4'>{Lookup.PRICING_DESC}</p>
 
-          <div className='border p-5 rounded-xl w-[70vw] flex justify-between mt-7 items-center' style={{backgroundColor:Colors.BACKGROUND}}>
+          <div className='border p-5 rounded-xl w-[70vw] flex flex-col gap-2 md:flex-row justify-between mt-7 items-center ' style={{backgroundColor:Colors.BACKGROUND}}>
               <h2 className='text-lg '>
                   <span className='font-bold p-1'>{userDetail?.token}</span>
                   Tokens Left</h2>

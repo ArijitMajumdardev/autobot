@@ -72,6 +72,7 @@ function SignInDialog({
           email: user.email,
           image: user.picture,
           _id: _id,
+          token:50000
         });
         closeDialog(false);
       } else {

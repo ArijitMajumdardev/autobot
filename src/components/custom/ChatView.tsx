@@ -14,6 +14,7 @@ import Prompt from "@/data/Prompt";
 import axios from "axios";
 import ReactMarkdown from 'react-markdown'
 import { useSidebar } from "../ui/sidebar";
+import { toast } from "sonner";
 
 interface AIResponse {
   result: string;
@@ -95,12 +96,24 @@ const ChatView = () => {
       userId:userDetail?._id as Id<"users">
     })
 
+    setUserDetail((prev) => {
+      if (!prev) return undefined; 
+      return {
+        ...prev,
+        token: token 
+      };
+    }); 
+
 
     setLoading(false);
   };
 
     
-    const onGenerate = (input : string) => {
+  const onGenerate = (input: string) => {
+    if (Number(userDetail?.token) < 10) {
+      toast("You Don't Have Enough Tokens !")
+        return
+      }
         setMessage(prev => [...prev, {
             role:'user',
             content:input
