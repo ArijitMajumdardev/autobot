@@ -1,7 +1,7 @@
 "use client";
 import { useConvex, useMutation } from "convex/react";
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { useMessage } from "@/context/MessageContext";
@@ -35,30 +35,36 @@ const ChatView = () => {
   const UpdateMessage = useMutation(api.workspace.UpdateMessage)
   const { toggleSidebar } = useSidebar()
   const UpdateTokens = useMutation(api.users.UpdateToken)
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     // Ensure `id` is a string and cast it to the expected type
     if (typeof id === "string") {
       GetWorkspaceData(); // Casting `id` to match `Id<"workspace">`
     }
-  }, [id]);
+  }, []);
 
   const GetWorkspaceData = async () => {
     const result = await convex.query(api.workspace.GetWorkspace, {
       workspaceId: id,
     });
-    setMessage(result?.messages);
+    setMessage((prev)=>prev.length>0? prev:result?.messages);
     console.log(result);
   };
 
   useEffect(() => {
+    console.log("runnung g")
+    if (isFirstRender.current) {
+      isFirstRender.current = false; // Mark as rendered
+      return; // Skip the first execution
+    }
     if (!loading && message?.length > 0) {
       const role = message[message.length - 1].role;
       if (role === "user") {
         GetAIResponse();
       }
     }
-  }, [message, loading]);
+  }, [message,loading]);
 
   const GetAIResponse = async () => {
     setLoading(true);
