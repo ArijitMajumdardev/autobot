@@ -33,26 +33,11 @@ function SignInDialog({
   openDialog: boolean;
   closeDialog: (v: boolean) => void;
   userInput: string;
-  }) {
-  
-  
-  
-  
-  
-  
+}) {
   const { setUserDetail } = useUserDetail();
 
   const CreateUser = useMutation(api.users.CreateUser);
   const convex = useConvex();
-
-
-
-
-
-
-
-
-
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -64,13 +49,12 @@ function SignInDialog({
 
       console.log(userInfo);
       const user = userInfo.data;
-      
+
       const UserIndb = await convex.query(api.users.GetUser, {
         email: user.email,
       });
 
-
-      if (UserIndb.name ) {
+      if (UserIndb.name) {
         if (typeof window !== undefined) {
           localStorage.setItem("user", JSON.stringify(user));
         }
@@ -85,9 +69,8 @@ function SignInDialog({
         });
         closeDialog(false);
 
-        return
+        return;
       }
-
 
       const result = await CreateUser({
         name: user.name,

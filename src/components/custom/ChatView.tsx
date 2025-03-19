@@ -12,7 +12,7 @@ import Lookup from "@/data/Lookup";
 import { ArrowRight, Loader2Icon } from "lucide-react";
 import Prompt from "@/data/Prompt";
 import axios from "axios";
-import ReactMarkdown from 'react-markdown'
+import ReactMarkdown from "react-markdown";
 import { useSidebar } from "../ui/sidebar";
 import { toast } from "sonner";
 
@@ -20,10 +20,12 @@ interface AIResponse {
   result: string;
 }
 
-
-export const countToken = (inputText: string)=>{
-  return inputText.trim().split(/\s+/).filter(word =>word).length
-}
+export const countToken = (inputText: string) => {
+  return inputText
+    .trim()
+    .split(/\s+/)
+    .filter((word) => word).length;
+};
 
 const ChatView = () => {
   const { id }: { id: Id<"workspace"> } = useParams();
@@ -32,9 +34,9 @@ const ChatView = () => {
   const { userDetail, setUserDetail } = useUserDetail();
   const [userInput, setUserInput] = useState<string>("");
   const [loading, setLoading] = useState(false);
-  const UpdateMessage = useMutation(api.workspace.UpdateMessage)
-  const { toggleSidebar } = useSidebar()
-  const UpdateTokens = useMutation(api.users.UpdateToken)
+  const UpdateMessage = useMutation(api.workspace.UpdateMessage);
+  const { toggleSidebar } = useSidebar();
+  const UpdateTokens = useMutation(api.users.UpdateToken);
   const isFirstRender = useRef(true);
 
   useEffect(() => {
@@ -48,12 +50,12 @@ const ChatView = () => {
     const result = await convex.query(api.workspace.GetWorkspace, {
       workspaceId: id,
     });
-    setMessage((prev)=>prev.length>0? prev:result?.messages);
+    setMessage((prev) => (prev.length > 0 ? prev : result?.messages));
     console.log(result);
   };
 
   useEffect(() => {
-    console.log("runnung g")
+    console.log("runnung g");
     if (isFirstRender.current) {
       isFirstRender.current = false; // Mark as rendered
       return; // Skip the first execution
@@ -64,7 +66,7 @@ const ChatView = () => {
         GetAIResponse();
       }
     }
-  }, [message,loading]);
+  }, [message, loading]);
 
   const GetAIResponse = async () => {
     setLoading(true);
@@ -72,59 +74,56 @@ const ChatView = () => {
     const result = await axios.post<AIResponse>("/api/ai-chat", {
       prompt: PROMPT,
     });
-      
-      const aiResp = {
-        role: "ai",
-        content: result.data.result,
-      }
 
-      console.log(aiResp);
+    const aiResp = {
+      role: "ai",
+      content: result.data.result,
+    };
 
+    console.log(aiResp);
 
-    setMessage((prev) => [
-      ...prev,aiResp
-      
-    ]);
+    setMessage((prev) => [...prev, aiResp]);
 
-      
-      await UpdateMessage({
-          messages: [...message, aiResp],
-          workspaceId: id,
-      })
-    
+    await UpdateMessage({
+      messages: [...message, aiResp],
+      workspaceId: id,
+    });
+
     // update the tokens in the user table
-    
-    const token = Number(userDetail?.token) - Number(countToken(JSON.stringify(aiResp))) 
+
+    const token =
+      Number(userDetail?.token) - Number(countToken(JSON.stringify(aiResp)));
 
     await UpdateTokens({
       token: token,
-      userId:userDetail?._id as Id<"users">
-    })
+      userId: userDetail?._id as Id<"users">,
+    });
 
     setUserDetail((prev) => {
-      if (!prev) return undefined; 
+      if (!prev) return undefined;
       return {
         ...prev,
-        token: token 
+        token: token,
       };
-    }); 
-
+    });
 
     setLoading(false);
   };
 
-    
   const onGenerate = (input: string) => {
     if (Number(userDetail?.token) < 10) {
-      toast("You Don't Have Enough Tokens !")
-        return
-      }
-        setMessage(prev => [...prev, {
-            role:'user',
-            content:input
-        }])
-        setUserInput('')
+      toast("You Don't Have Enough Tokens !");
+      return;
     }
+    setMessage((prev) => [
+      ...prev,
+      {
+        role: "user",
+        content: input,
+      },
+    ]);
+    setUserInput("");
+  };
   return (
     <div className="relative h-[80vh] flex flex-col ">
       <div className="flex-1 overflow-y-scroll scrollbar-hide pl-10  ">
@@ -144,7 +143,9 @@ const ChatView = () => {
               />
             )}
 
-            <ReactMarkdown className="flex flex-col">{msg.content}</ReactMarkdown>
+            <ReactMarkdown className="flex flex-col">
+              {msg.content}
+            </ReactMarkdown>
           </div>
         ))}
 
@@ -162,27 +163,34 @@ const ChatView = () => {
       </div>
       {/* input section */}
       <div className="flex gap-2 items-end">
-      {userDetail &&  <Image className="rounded-full cursor-pointer" onClick={toggleSidebar}
-                  src={userDetail.image as string}
-                  width={30}
-                  height={30}
-                  alt="logo"
-                />}
-
-      <div className="p-5 w-full border max-w-xl rounded-xl mt-3 bg-zinc-800 group focus-within:bg-zinc-700 transition-colors duration-150 ">
-        <div className="flex gap-2 ">
-          <textarea
-            placeholder={Lookup.INPUT_PLACEHOLDER}
-            className="w-full h-32 resize-none max-h-52 bg-transparent outline-none"
-            onChange={(e) => setUserInput(e.target.value)}
-            value={userInput}
+        {userDetail && (
+          <Image
+            className="rounded-full cursor-pointer"
+            onClick={toggleSidebar}
+            src={userDetail.image as string}
+            width={30}
+            height={30}
+            alt="logo"
           />
-          {userInput && (
-            <ArrowRight  onClick={()=>onGenerate(userInput)} className="h-10 w-10 p-2 hover:bg-rose-500 rounded-md cursor-pointer" />
-          )}
+        )}
+
+        <div className="p-5 w-full border max-w-xl rounded-xl mt-3 bg-zinc-800 group focus-within:bg-zinc-700 transition-colors duration-150 ">
+          <div className="flex gap-2 ">
+            <textarea
+              placeholder={Lookup.INPUT_PLACEHOLDER}
+              className="w-full h-32 resize-none max-h-52 bg-transparent outline-none"
+              onChange={(e) => setUserInput(e.target.value)}
+              value={userInput}
+            />
+            {userInput && (
+              <ArrowRight
+                onClick={() => onGenerate(userInput)}
+                className="h-10 w-10 p-2 hover:bg-rose-500 rounded-md cursor-pointer"
+              />
+            )}
+          </div>
         </div>
-        </div>
-        </div>
+      </div>
     </div>
   );
 };

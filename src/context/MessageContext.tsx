@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { createContext, useContext } from "react";
 
 export interface IMessage {
@@ -6,10 +6,9 @@ export interface IMessage {
   content: string;
 }
 
-
 export interface MessageContextType {
-  message: IMessage[]  ;
-  setMessage: React.Dispatch<React.SetStateAction<IMessage[] >>;
+  message: IMessage[];
+  setMessage: React.Dispatch<React.SetStateAction<IMessage[]>>;
 }
 
 export const MessageContext = createContext<MessageContextType>({
@@ -18,9 +17,9 @@ export const MessageContext = createContext<MessageContextType>({
 });
 export const useMessage = () => {
   const context = useContext(MessageContext);
-    if (!context) {
-      throw new Error('Hero must be used within a MessageContext.Provider');
+  if (!context) {
+    throw new Error("Hero must be used within a MessageContext.Provider");
   }
-  
-  return context
-}
+
+  return context;
+};
