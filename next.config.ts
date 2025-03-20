@@ -22,7 +22,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Cross-Origin-Opener-Policy",
-            value: "same-origin", // Required for OAuth popups
+            value: "same-origin-allow-popups", // Required for OAuth popups
           },
           // {
           //   key: "Cross-Origin-Embedder-Policy",
