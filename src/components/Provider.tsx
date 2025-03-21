@@ -33,6 +33,7 @@ export default function Provider({
   );
   const [action, setAction] = useState<Iaction>();
   const [openDialog, setOpenDialog] = useState(false);
+  const [notLoaded,setNotLoaded] = useState(true)
   const router = useRouter();
   const convex = useConvex();
 
@@ -69,27 +70,26 @@ export default function Provider({
     <GoogleOAuthProvider
       clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string}
     >
-      {/* <PayPalScriptProvider
+      <PayPalScriptProvider
         options={{
           clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID as string,
         }}
-      > */}
-        <UserDetailContext.Provider value={{ userDetail, setUserDetail }}>
+      >
+        <UserDetailContext.Provider value={{ userDetail, setUserDetail ,notLoaded,setNotLoaded}}>
           <MessageContext.Provider value={{ message, setMessage }}>
             <ActionContext.Provider value={{ action, setAction }}>
               <SignContext.Provider value={{ openDialog, setOpenDialog }}>
                 <NextThemesProvider {...props}>
                   <SidebarProvider defaultOpen={false}>
-                    <div className=" relative flex flex-col h-screen">
+                    <div className="h-screen">
                       {/* Header */}
-                      <Header className="fixed top-0 left-0 w-full z-10" />
 
                       {/* Sidebar and Content */}
-                      <div className="flex flex-1 pt-[64px]">
-                        {" "}
-                        {/* Adjust padding-top to match Header's height */}
+                      <div className="flex flex-1 min-h-[88vh] relative">
                         <AppSideBar className="" />
-                        <main className="flex-1 overflow-y-auto w-[98vw]  ">
+                        {/* Adjust padding-top to match Header's height */}
+                        <main className=" overflow-y-auto w-[98vw] absolute  ">
+                      <Header className="sticky w-full" />
                           {children}
                         </main>
                       </div>
@@ -100,7 +100,7 @@ export default function Provider({
             </ActionContext.Provider>
           </MessageContext.Provider>
         </UserDetailContext.Provider>
-      {/* </PayPalScriptProvider> */}
+      </PayPalScriptProvider>
       </GoogleOAuthProvider>
       </>
   );

@@ -125,8 +125,8 @@ const ChatView = () => {
     setUserInput("");
   };
   return (
-    <div className="relative h-[80vh] flex flex-col ">
-      <div className="flex-1 overflow-y-scroll scrollbar-hide pl-10  ">
+    <div className="relative h-[80vh] flex flex-col ml-3 ">
+      <div className="flex-1 overflow-y-scroll scrollbar-hide  ">
         {message?.map((msg, index) => (
           <div
             key={index}
@@ -163,7 +163,7 @@ const ChatView = () => {
       </div>
       {/* input section */}
       <div className="flex gap-2 items-end">
-        {userDetail && (
+        {/* {userDetail && (
           <Image
             className="rounded-full cursor-pointer"
             onClick={toggleSidebar}
@@ -172,7 +172,7 @@ const ChatView = () => {
             height={30}
             alt="logo"
           />
-        )}
+        )} */}
 
         <div className="p-5 w-full border max-w-xl rounded-xl mt-3 bg-zinc-800 group focus-within:bg-zinc-700 transition-colors duration-150 ">
           <div className="flex gap-2 ">

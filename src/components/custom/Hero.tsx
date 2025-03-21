@@ -14,6 +14,7 @@ import { Id } from "../../../convex/_generated/dataModel";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useSignContext } from "@/context/SignContext";
+import { useAuth } from "@clerk/clerk-react";
 
 interface MessageContextType {
   message: { role: string; content: string } | undefined;
@@ -23,11 +24,10 @@ interface MessageContextType {
 function Hero() {
   const [userInput, setUserInput] = useState<string>("");
   const { openDialog, setOpenDialog } = useSignContext();
-
-  const { userDetail, setUserDetail } = useUserDetail();
+  const { userDetail, setUserDetail,notLoaded } = useUserDetail();
   const { message, setMessage } = useMessage();
   const router = useRouter();
-
+  const { isSignedIn, isLoaded } = useAuth();
   const CreateWorkspace = useMutation(api.workspace.CreateWorkspace);
   // useEffect(() => {
 
@@ -40,6 +40,7 @@ function Hero() {
   // }, []);
 
   const onGenerate = async (input: string) => {
+    console.log("user lll",userDetail)
     if (!userDetail?.name) {
       setOpenDialog(true);
       return;
@@ -88,14 +89,15 @@ function Hero() {
       </div>
 
       <div className="flex max-w-xl flex-wrap items-center justify-center gap-3 mt-8 ">
-        {Lookup.SUGGSTIONS.map((suggestion, index) => (
-          <h2
+        {!notLoaded && Lookup.SUGGSTIONS.map((suggestion, index) => (
+          <button
+          disabled={notLoaded}
             key={index}
-            onClick={() => onGenerate(userInput)}
+            onClick={() => onGenerate(suggestion)}
             className="border rounded-full text-sm text-gray-400 p-1 px-2 hover:text-white cursor-pointer"
           >
             {suggestion}
-          </h2>
+          </button>
         ))}
       </div>
       {openDialog && (

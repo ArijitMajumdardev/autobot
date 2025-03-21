@@ -10,11 +10,13 @@ import { useRouter } from "next/navigation";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { useSidebar } from "../ui/sidebar";
 import { useUserDetail } from "@/context/UserDetailContext";
+import { useClerk } from "@clerk/nextjs";
 
 export default function SideFooter() {
   const { toggleSidebar } = useSidebar();
   const { setUserDetail } = useUserDetail();
   const router = useRouter();
+  const { signOut } = useClerk()
   const options = [
     {
       name: "Settings",
@@ -27,7 +29,6 @@ export default function SideFooter() {
     {
       name: "My Subscription",
       icon: Wallet,
-      path: "/pricing",
     },
     {
       name: "Sign Out",
@@ -43,7 +44,7 @@ export default function SideFooter() {
     path?: string;
   }) => {
     if (item.name == "Sign Out") {
-      localStorage.removeItem("user");
+      signOut({ redirectUrl: '/' })
       setUserDetail(undefined);
       toggleSidebar();
       router.push("/");

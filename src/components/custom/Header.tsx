@@ -9,7 +9,7 @@ import uuid4 from "uuid4";
 
 import { usePathname } from "next/navigation";
 import { useActionContext } from "@/context/ActionContext";
-import { LucideDownload, RocketIcon } from "lucide-react";
+import { LucideDownload, PanelLeftOpenIcon, RocketIcon } from "lucide-react";
 import { useSidebar } from "../ui/sidebar";
 import { useSignContext } from "@/context/SignContext";
 
@@ -27,7 +27,7 @@ function Header({ className }: { className: string }) {
   const { toggleSidebar } = useSidebar();
   const { openDialog, setOpenDialog } = useSignContext();
   const { action, setAction } = useActionContext();
-  const { userDetail, setUserDetail } = useUserDetail();
+  const { userDetail, setUserDetail,setNotLoaded } = useUserDetail();
   const { isSignedIn, user, isLoaded } = useUser();
     const convex = useConvex();
   const pathname = usePathname();
@@ -59,6 +59,7 @@ function Header({ className }: { className: string }) {
         token: result.token,
       });
     }
+    setNotLoaded(false)
   }
   useEffect(() => {
     settingUserDetailContext()
@@ -66,13 +67,17 @@ function Header({ className }: { className: string }) {
 
   return (
     <div className={`p-4 flex justify-between items-center ${className}`}>
-      <div className="bg-white w-11 h-11 flex justify-center items-center rounded-md">
-        <Image
+      <div className="flex justify-between gap-4 items-center">
+        {/* <Image
           src={"/chat-bubble_11401129.svg"}
           width={40}
           height={40}
           alt="logo"
-        ></Image>
+        ></Image> */}
+        <SignedIn>
+          <PanelLeftOpenIcon onClick={toggleSidebar} />
+          </SignedIn>
+        <h1 className="text-2xl text-gray-400 font-bold">AutoBot</h1>
       </div>
 
       <div className="flex gap-5">
