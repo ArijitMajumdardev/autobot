@@ -26,9 +26,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+        <ConvexClientProvider>
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <ConvexClientProvider>
           <Provider
             attribute="class"
             defaultTheme="dark"
@@ -38,8 +38,8 @@ export default function RootLayout({
             {children}
             <Toaster />
           </Provider>
-        </ConvexClientProvider>
       </body>
     </html>
+        </ConvexClientProvider>
   );
 }
