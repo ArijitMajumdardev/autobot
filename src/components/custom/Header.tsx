@@ -76,7 +76,7 @@ function Header({ className }: { className: string }) {
             </>
           )}
 
-          <UserButton />
+          <UserButton  />
           {/* <Image
               onClick={toggleSidebar}
               src={userDetail.image as string}
@@ -87,8 +87,14 @@ function Header({ className }: { className: string }) {
             /> */}
         </SignedIn>
         <SignedOut>
-          <SignInButton />
-          <SignUpButton />
+          <SignInButton>
+            <Button className="hover:bg-rose-600" variant={"ghost"}>
+              Sign In
+            </Button>
+          </SignInButton>
+          <SignUpButton>
+            <Button>Sign Up</Button>
+          </SignUpButton>
         </SignedOut>
       </div>
     </div>
