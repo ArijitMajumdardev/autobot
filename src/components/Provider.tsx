@@ -36,33 +36,33 @@ export default function Provider({
   const router = useRouter();
   const convex = useConvex();
 
-  const isAuthenticated = async () => {
-    if (typeof window !== undefined) {
-      const user = JSON.parse(localStorage.getItem("user") as string);
-      if (!user) {
-        router.push("/");
-        return;
-      }
-      if (user) {
-        const result = await convex.query(api.users.GetUser, {
-          email: user.email,
-        });
+  // const isAuthenticated = async () => {
+  //   if (typeof window !== undefined) {
+  //     const user = JSON.parse(localStorage.getItem("user") as string);
+  //     if (!user) {
+  //       router.push("/");
+  //       return;
+  //     }
+  //     if (user) {
+  //       const result = await convex.query(api.users.GetUser, {
+  //         email: user.email,
+  //       });
 
-        setUserDetail({
-          name: result.name,
-          email: result.email,
-          image: result.image,
-          _id: result._id,
-          token: result.token,
-        });
-        console.log(result);
-      }
-    }
-  };
+  //       setUserDetail({
+  //         name: result.name,
+  //         email: result.email,
+  //         image: result.image,
+  //         _id: result._id,
+  //         token: result.token,
+  //       });
+  //       console.log(result);
+  //     }
+  //   }
+  // };
 
-  useEffect(() => {
-    isAuthenticated();
-  }, []);
+  // useEffect(() => {
+  //   isAuthenticated();
+  // }, []);
 
   return (
     <>
