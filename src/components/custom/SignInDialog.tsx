@@ -16,6 +16,7 @@ import uuid4 from "uuid4";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { Id } from "../../../convex/_generated/dataModel";
+import { SignInButton } from "@clerk/nextjs";
 
 export interface Iresult {
   name: string | null | undefined;
@@ -34,75 +35,6 @@ function SignInDialog({
   closeDialog: (v: boolean) => void;
   userInput: string;
 }) {
-  const { setUserDetail } = useUserDetail();
-
-  const CreateUser = useMutation(api.users.CreateUser);
-  const convex = useConvex();
-
-  const googleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      console.log(tokenResponse);
-      const userInfo: any = await axios.get(
-        "https://www.googleapis.com/oauth2/v3/userinfo",
-        { headers: { Authorization: "Bearer " + tokenResponse.access_token } }
-      );
-
-      console.log(userInfo);
-      const user = userInfo.data;
-
-      const UserIndb = await convex.query(api.users.GetUser, {
-        email: user.email,
-      });
-
-      if (UserIndb.name) {
-        if (typeof window !== undefined) {
-          localStorage.setItem("user", JSON.stringify(user));
-        }
-
-        const _id = UserIndb._id;
-        setUserDetail({
-          name: user.name,
-          email: user.email,
-          image: user.picture,
-          _id: _id,
-          token: 50000,
-        });
-        closeDialog(false);
-
-        return;
-      }
-
-      const result = await CreateUser({
-        name: user.name,
-        email: user.email,
-        image: user.picture,
-        uid: uuid4(),
-      });
-
-      console.log("this is the result ", result);
-
-      if (result) {
-        // Only set user details if the result is not null
-        if (typeof window !== undefined) {
-          localStorage.setItem("user", JSON.stringify(user));
-        }
-
-        const _id = result;
-        setUserDetail({
-          name: user.name,
-          email: user.email,
-          image: user.picture,
-          _id: _id,
-          token: 50000,
-        });
-        closeDialog(false);
-      } else {
-        console.error("Error: User creation failed or returned null.");
-        // Optionally show a user-friendly error message
-      }
-    },
-    onError: (errorResponse) => console.log(errorResponse),
-  });
 
   return (
     <Dialog open={openDialog} onOpenChange={closeDialog}>
@@ -114,12 +46,13 @@ function SignInDialog({
               {Lookup.SIGNIN_HEADING}
             </span>
             <span className="mt-2">{Lookup.SIGNIN_SUBHEADING}</span>
+            <SignInButton>
             <Button
               className="mt-2 bg-gradient-to-tr from-purple-600 to-orange-500 text-white hover:from-purple-500 hover:to-orange-400 transition-all duration-300"
-              onClick={() => googleLogin()}
             >
               Sign in with Google
-            </Button>
+              </Button>
+              </SignInButton>
           </DialogDescription>
 
           <div>
