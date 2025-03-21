@@ -13,6 +13,8 @@ export interface IuserDetail {
 export interface IUserDetailContext {
   userDetail: IuserDetail | undefined;
   setUserDetail: React.Dispatch<React.SetStateAction<IuserDetail | undefined>>;
+  notLoaded: boolean;
+  setNotLoaded: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const UserDetailContext = createContext<IUserDetailContext | null>(null);

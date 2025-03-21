@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
         hostname: "*.googleusercontent.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "img.clerk.com", // ✅ Add Clerk's image CDN
+        port: "",
+      },
     ],
   },
 
