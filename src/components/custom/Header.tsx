@@ -13,6 +13,15 @@ import { LucideDownload, RocketIcon } from "lucide-react";
 import { useSidebar } from "../ui/sidebar";
 import { useSignContext } from "@/context/SignContext";
 
+import {
+  ClerkProvider,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
+
 function Header({ className }: { className: string }) {
   const { userDetail, setUserDetail } = useUserDetail();
   const { toggleSidebar } = useSidebar();
@@ -44,53 +53,43 @@ function Header({ className }: { className: string }) {
       </div>
 
       <div className="flex gap-5">
-        {userDetail?.name ? (
-          <>
-            {isWorkspacePage && (
-              <>
-                <Button
-                  className="bg-gradient-to-tr from-purple-600 to-orange-500 hover:from-purple-500 hover:to-orange-400 transition-all duration-300"
-                  variant={"ghost"}
-                  onClick={() => OnActionBtn("export")}
-                >
-                  <LucideDownload />
-                  Export
-                </Button>
+        <SignedIn>
+          {isWorkspacePage && (
+            <>
+              <Button
+                className="bg-gradient-to-tr from-purple-600 to-orange-500 hover:from-purple-500 hover:to-orange-400 transition-all duration-300"
+                variant={"ghost"}
+                onClick={() => OnActionBtn("export")}
+              >
+                <LucideDownload />
+                Export
+              </Button>
 
-                <Button
-                  className="bg-gradient-to-tr from-blue-600 to-teal-600 hover:from-blue-500 hover:to-teal-400 transition-all duration-300 "
-                  variant={"ghost"}
-                  onClick={() => OnActionBtn("deploy")}
-                >
-                  <RocketIcon />
-                  Deploy
-                </Button>
-              </>
-            )}
+              <Button
+                className="bg-gradient-to-tr from-blue-600 to-teal-600 hover:from-blue-500 hover:to-teal-400 transition-all duration-300 "
+                variant={"ghost"}
+                onClick={() => OnActionBtn("deploy")}
+              >
+                <RocketIcon />
+                Deploy
+              </Button>
+            </>
+          )}
 
-            <Image
+          <UserButton />
+          {/* <Image
               onClick={toggleSidebar}
               src={userDetail.image as string}
               alt={userDetail.name}
               width={36}
               height={36}
               className="rounded-full cursor-pointer"
-            />
-          </>
-        ) : (
-          <>
-            <Button
-              className="hover:bg-rose-600"
-              variant={"ghost"}
-              onClick={() => {
-                setOpenDialog(true);
-              }}
-            >
-              Sign in
-            </Button>
-            <Button>Sign up</Button>
-          </>
-        )}
+            /> */}
+        </SignedIn>
+        <SignedOut>
+          <SignInButton />
+          <SignUpButton />
+        </SignedOut>
       </div>
     </div>
   );
