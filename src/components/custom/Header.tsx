@@ -3,7 +3,7 @@ import Image from "next/image";
 import React, { useEffect } from "react";
 import { Button } from "../ui/button";
 import { useUserDetail } from "@/context/UserDetailContext";
-import { useMutation } from "convex/react";
+import { useConvex, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import uuid4 from "uuid4";
 
@@ -20,18 +20,20 @@ import {
   SignedIn,
   SignedOut,
   UserButton,
+  useUser,
 } from "@clerk/nextjs";
 
 function Header({ className }: { className: string }) {
-  const { userDetail, setUserDetail } = useUserDetail();
   const { toggleSidebar } = useSidebar();
   const { openDialog, setOpenDialog } = useSignContext();
-
+  const { action, setAction } = useActionContext();
+  const { userDetail, setUserDetail } = useUserDetail();
+  const { isSignedIn, user, isLoaded } = useUser();
+    const convex = useConvex();
   const pathname = usePathname();
   console.log("pathanme", pathname);
   const isWorkspacePage = /^\/workspace\/[a-zA-Z0-9_-]+$/.test(pathname);
   console.log("isWorkspacePage ", isWorkspacePage);
-  const { action, setAction } = useActionContext();
 
   const OnActionBtn = (action: string) => {
     console.log("clicked export", action);
@@ -40,6 +42,27 @@ function Header({ className }: { className: string }) {
       timeStamp: Date.now(),
     });
   };
+
+  //setting the context for the userDetail
+  const settingUserDetailContext = async () => {
+    if (user) {
+      const email = user?.emailAddresses[0].emailAddress
+      const result = await convex.query(api.users.GetUser, {
+        email: email,
+      });
+  
+      setUserDetail({
+        name: result.name,
+        email: result.email,
+        image: result.image,
+        _id: result._id,
+        token: result.token,
+      });
+    }
+  }
+  useEffect(() => {
+    settingUserDetailContext()
+  },[user])
 
   return (
     <div className={`p-4 flex justify-between items-center ${className}`}>
@@ -76,7 +99,7 @@ function Header({ className }: { className: string }) {
             </>
           )}
 
-          <UserButton  />
+          <UserButton />
           {/* <Image
               onClick={toggleSidebar}
               src={userDetail.image as string}
