@@ -6,10 +6,10 @@ export default defineSchema({
         name: v.string(),
         email: v.string(),
         image: v.string(),
-        uid: v.string(),
+        clerkId: v.string(),
         token:v.optional(v.number())
         
-    }),
+    }).index("by_clerk_id",["clerkId"]),
     workspace: defineTable({
         messages: v.any(),
         fileData: v.optional(v.any()),

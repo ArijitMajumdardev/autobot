@@ -6,7 +6,7 @@ export const CreateUser = mutation({
         name: v.string(),
         email: v.string(),
         image: v.string(),
-        uid:v.string()
+        clerkId:v.string()
     },
     handler: async (ctx, args) => {
         
@@ -17,8 +17,8 @@ export const CreateUser = mutation({
                 name: args.name,
                 email: args.email,
                 image: args.image,
-                uid: args.uid,
-                token:50000
+                token:50000,
+                clerkId: args.clerkId,
             })
             return result
 
