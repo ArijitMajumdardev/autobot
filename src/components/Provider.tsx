@@ -70,11 +70,11 @@ export default function Provider({
     <GoogleOAuthProvider
       clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string}
     >
-      <PayPalScriptProvider
+      {/* <PayPalScriptProvider
         options={{
           clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID as string,
         }}
-      >
+      > */}
         <UserDetailContext.Provider value={{ userDetail, setUserDetail ,notLoaded,setNotLoaded}}>
           <MessageContext.Provider value={{ message, setMessage }}>
             <ActionContext.Provider value={{ action, setAction }}>
@@ -100,7 +100,7 @@ export default function Provider({
             </ActionContext.Provider>
           </MessageContext.Provider>
         </UserDetailContext.Provider>
-      </PayPalScriptProvider>
+      {/* </PayPalScriptProvider> */}
       </GoogleOAuthProvider>
       </>
   );
