@@ -63,7 +63,10 @@ export const GetAllWorkspace = query({
         userId:v.id('users')
     },
     handler:async (ctx,args) =>{
-        const result = ctx.db.query('workspace').filter(q => q.eq(q.field('user'), args.userId)).collect()
+        const result = await ctx.db.query('workspace')
+            .filter(q => q.eq(q.field('user'), args.userId))
+            .order("desc")
+            .collect()
         return result
     }
 })
