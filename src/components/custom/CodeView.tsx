@@ -10,8 +10,7 @@ import {
 import Lookup from "@/data/Lookup";
 import { useMessage } from "@/context/MessageContext";
 import Prompt from "@/data/Prompt";
-import axios from "axios";
-import { useAction, useConvex, useMutation } from "convex/react";
+import { useConvex, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useParams } from "next/navigation";
 import { Id } from "../../../convex/_generated/dataModel";
@@ -66,35 +65,75 @@ const CodeView = () => {
     setLoading(true);
     const PROMPT = JSON.stringify(message) + " " + Prompt.CODE_GEN_PROMPT;
 
-    const result = await axios.post("/api/gen-ai-code", {
-      prompt: PROMPT,
-    });
-    console.log(result.data);
-    const aiResp: any = result.data;
-    const mergedFiles = { ...Lookup.DEFAULT_FILE, ...aiResp.files };
-    setFiles(mergedFiles);
-    await updateFiles({
-      workspaceId: id,
-      files: mergedFiles,
-    });
+    try {
+      const res = await fetch("/api/gen-ai-code", {
+        method: "POST",
+        body: JSON.stringify({ prompt: PROMPT }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    const token =
-      Number(userDetail?.token) - Number(countToken(JSON.stringify(aiResp)));
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
 
-    await UpdateTokens({
-      token: token,
-      userId: userDetail?._id as Id<"users">,
-    });
+      const reader = res.body?.getReader();
+      if (!reader) {
+        throw new Error("No response body");
+      }
 
-    setUserDetail((prev) => {
-      if (!prev) return undefined;
-      return {
-        ...prev,
-        token: token,
-      };
-    });
+      const decoder = new TextDecoder();
+      let fullText = "";
 
-    setLoading(false);
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        fullText += decoder.decode(value, { stream: true });
+      }
+
+      // Final decode to flush any remaining bytes
+      fullText += decoder.decode();
+
+      console.log("Full AI Response:", fullText);
+
+      // Clean up the response - remove markdown code fences if present
+      let cleanedText = fullText.trim();
+      if (cleanedText.startsWith("```json")) {
+        cleanedText = cleanedText.slice(7);
+      } else if (cleanedText.startsWith("```")) {
+        cleanedText = cleanedText.slice(3);
+      }
+      if (cleanedText.endsWith("```")) {
+        cleanedText = cleanedText.slice(0, -3);
+      }
+      // Also handle case where response starts with just "json\n"
+      if (cleanedText.startsWith("json\n")) {
+        cleanedText = cleanedText.slice(5);
+      }
+      cleanedText = cleanedText.trim();
+
+      const aiResp = JSON.parse(cleanedText);
+
+      // Check if response is an error
+      if (aiResp.error) {
+        console.error("AI Error:", aiResp.message);
+        setLoading(false);
+        return;
+      }
+
+      const mergedFiles = { ...Lookup.DEFAULT_FILE, ...aiResp.files };
+
+      setFiles(mergedFiles);
+      await updateFiles({
+        workspaceId: id,
+        files: mergedFiles,
+      });
+    } catch (error) {
+      console.error("Error generating code:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
